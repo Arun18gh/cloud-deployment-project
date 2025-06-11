@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "eu-west-1"
 }
 
 resource "tls_private_key" "ssh_key" {
@@ -34,12 +34,12 @@ data "aws_subnet" "default" {
     values = [data.aws_vpc.default.id]
   }
 
-  availability_zone = "us-east-1a"
+  availability_zone = "eu-west-1a"
 }
 
 resource "aws_security_group" "web_sg" {
   name        = "web-server-sg"
-  description = "Allow SSH, HTTP, and HTTPS"
+  description = "Allow SSH, HTTP"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {

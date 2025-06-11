@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "networking-ca1"
-    key            = "ec2-docker/terraform.tfstate"
-    region         = "us-east-1"
+    bucket         = "networking-ca1-20061730"
+    key            = "terraform/terraform.tfstate"
+    region         = "eu-west-1"
     encrypt        = true
   }
 }
