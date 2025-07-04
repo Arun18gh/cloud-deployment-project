@@ -1,11 +1,16 @@
-# Cloud Automated Container Deployment and Administration
+# Automated Container Deployment and Administration in the Cloud
 
 ## 📘 Project Overview
-The purpose of this project is to demonstrate the deployment of a secured web application on AWS using modern DevOps tools. Deployment is fully automated using:
-- **Terraform** to provision cloud infrastructure (EC2 instance)
-- **Ansible** to install and configure Docker
-- **Docker** to containerize the static web application
-- **GitHub Actions** to automate the CI/CD pipeline
+This project demonstrates the end-to-end automation of cloud infrastructure and application deployment using DevOps tools. It provisions an AWS EC2 instance using Terraform, configures it with Ansible, containerizes a static web app using Docker, and uses GitHub Actions to automate the CI/CD pipeline.
+
+---
+
+## 🧰 Tools Used
+- **Terraform** – Infrastructure as Code for EC2 provisioning
+- **Ansible** – Configuration management (installing Docker)
+- **Docker** – Containerization of the web app (HTML)
+- **GitHub Actions** – CI/CD automation triggered on push to main
+- **AWS EC2** – Host instance for application deployment
 
 ---
 
@@ -14,84 +19,106 @@ The purpose of this project is to demonstrate the deployment of a secured web ap
 cloud-deployment-project/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml           # GitHub Actions workflow
+│       └── deploy.yml              # GitHub Actions pipeline
 ├── ansible/
-│   ├── playbook.yml            # Ansible playbook to install Docker
-│   └── destroy.yml             # Optional: clean-up script
+│   ├── playbook.yml               # Installs Docker
+│   └── destroy.yml                # Optional cleanup playbook
 ├── webapp/
-│   ├── Dockerfile              # Builds the web server container
-│   └── index.html              # Sample web page
-├── .gitignore                  # Terraform exclusions
-├── backend.tf                  # Terraform backend config (optional)
-├── main.tf                     # Main Terraform file (provisions EC2)
+│   ├── Dockerfile                 # Builds Docker container
+│   └── index.html                 # Web page served by container
+├── terraform/
+│   ├── main.tf                    # EC2 provisioning script
+│   └── backend.tf                 # (optional) backend storage config
+├── .gitignore                     # Ignores .terraform and state files
+├── README.md                      # Project documentation (this file)
+└── screenshots/
+    ├── terraform-output.png
+    ├── ansible-setup.png
+    ├── docker-app-running.png
+    ├── github-push-terminal.png
+    ├── github-actions-log.png
+    └── architecture.png
 ```
 
 ---
 
-## 🚀 How to Deploy
+## 🚀 How to Deploy This Project
 
-### 1️⃣ Provision Infrastructure Using Terraform
+### ✅ Step 1: Provision Infrastructure with Terraform
 ```bash
-cd cloud-deployment-project
+cd terraform
 terraform init
 terraform apply
 ```
-
-Create an EC2 instance, key-pair, and security group allowing ports 80 (HTTP) and 22 (SSH).
+This will:
+- Create an EC2 instance
+- Create security group (ports 22 and 80 open)
+- Output the public IP of the instance
 
 ---
 
-### 2️⃣ Server Configuration by Ansible
-Ensure that the EC2 public IP is in the `ansible/hosts` file, and then run:
+### ✅ Step 2: Configure Server with Ansible
+1. Edit the `hosts` file or use command line to define EC2 IP
+2. Run:
 ```bash
 cd ansible
-ansible-playbook -i hosts playbook.yml
+ansible-playbook -i "ec2-ip," playbook.yml --private-key your-key.pem -u ec2-user
 ```
-
-This will install Docker and configure it to be started on boot.
 
 ---
 
-### 3️⃣ Deploy Website with Docker
-SSH into the EC2 Instance:
-
+### ✅ Step 3: Deploy Web App with Docker
+SSH into the EC2 instance and run:
 ```bash
-ssh -i your-key.pem ec2-user@your-ec2-public-ip
 cd webapp
 docker build -t webapp .
 docker run -d -p 80:80 webapp
 ```
 
-Get your browser to `http://your-ec2-public-ip` and check it out.
+Open `http://<your-ec2-ip>` in a browser — you’ll see the HTML page!
 
 ---
 
-### 4️⃣ Setup CI/CD with GitHub Actions
-The `deploy.yml` file can easily be configured to deploy from GitHub to EC2 over SSH.
+### ✅ Step 4: Enable CI/CD with GitHub Actions
+- Secrets to add in GitHub:
+  - `HOST`: your EC2 IP
+  - `USERNAME`: `ec2-user`
+  - `SSH_KEY`: PEM file content (single line)
 
-#### Secrets to Add in GitHub Repo Settings:
-- `HOST` → your EC2 public IP
-- `USERNAME` → usually `ec2-user`
-- `SSH_KEY` → contents of your PEM private key
-
-Every push to the `main` branch will trigger GitHub Actions to auto-deploy the app.
-
----
-
-## 🖼️ Architecture Diagram
-```
-GitHub Actions ───> SSH ───> AWS EC2 ── Docker ──> Web App (index.html)
-```
-![Architecture](./screenshots/architecture.png)  
+Push code to `main` branch to trigger deployment.
 
 ---
 
 ## 📷 Screenshots
-> Upload inside a `/screenshots` folder:
-- Terraform Apply Success  
-- Ansible Setup Logs  
-- Browser View of Web-App  
-- GitHub Actions Workflow Run  
+
+| Figure | Description | Filename |
+|--------|-------------|----------|
+| 1 | Git push to GitHub | `github-push-terminal.png` |
+| 2 | Terraform apply (EC2 created) | `terraform-output.png` |
+| 3 | Ansible installs Docker | `ansible-setup.png` |
+| 4 | Web app in browser | `docker-app-running.png` |
+| 5 | GitHub Actions job steps | `github-actions-log.png` |
+| 6 | Architecture diagram | `architecture.png` |
+
+---
+
+## 🖼️ Architecture Diagram
+
+![Architecture Diagram](./screenshots/architecture.png)
+
+---
+
+## 🔗 Live Demo
+> http://<your-ec2-ip>  
+(Shows: “Hello from HTTP Docker Web Server!”)
+
+---
+
+## 👤 Author
+**Arun Sudhakar**  
+Module: B9IS121 – Network Systems and Administration  
+Instructor: Kingsley Ibomo  
+Institution: Dublin Business School (DBS)
 
 ---
 
@@ -99,13 +126,5 @@ GitHub Actions ───> SSH ───> AWS EC2 ── Docker ──> Web App (
 - [Terraform Docs](https://developer.hashicorp.com/terraform)
 - [Ansible Docs](https://docs.ansible.com/)
 - [Docker Docs](https://docs.docker.com/)
-- [GitHub Actions Docs](https://docs.github.com/en/actions)
-- [AWS EC2](https://docs.aws.amazon.com/ec2)
-
----
-
-## 👤 Author
-Arun Sudhakar (20061730)
-Module: B9IS121 – Network Systems and Administration  
-Instructor: Kingsley Ibomo  
-Dublin Business School (DBS)
+- [GitHub Actions](https://docs.github.com/en/actions)
+- [AWS EC2 Guide](https://docs.aws.amazon.com/ec2)
