@@ -62,7 +62,7 @@ This will:
 2. Run:
 ```bash
 cd ansible
-ansible-playbook -i "ec2-ip," playbook.yml --private-key your-key.pem -u ec2-user
+ansible-playbook -i "3.250.94.77," playbook.yml --private-key your-key.pem -u ec2-user
 ```
 
 ---
@@ -75,13 +75,13 @@ docker build -t webapp .
 docker run -d -p 80:80 webapp
 ```
 
-Open `http://<your-ec2-ip>` in a browser — you’ll see the HTML page!
+Open [http://3.250.94.77](http://3.250.94.77) in a browser — you’ll see the HTML page!
 
 ---
 
 ### ✅ Step 4: Enable CI/CD with GitHub Actions
 - Secrets to add in GitHub:
-  - `HOST`: your EC2 IP
+  - `HOST`: `3.250.94.77`
   - `USERNAME`: `ec2-user`
   - `SSH_KEY`: PEM file content (single line)
 
@@ -109,7 +109,7 @@ Push code to `main` branch to trigger deployment.
 ---
 
 ## 🔗 Live Demo
-> http://<your-ec2-ip>  
+> http://3.250.94.77  
 (Shows: “Hello from HTTP Docker Web Server!”)
 
 ---
