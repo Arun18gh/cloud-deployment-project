@@ -38,8 +38,8 @@ data "aws_subnet" "default" {
 }
 
 resource "aws_security_group" "web_sg" {
-  name        = "web-server-sg"
-  description = "Allow SSH, HTTP"
+  name        = "app-server-sg"
+  description = "Allowing"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -61,12 +61,12 @@ resource "aws_security_group" "web_sg" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1" # All traffic
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "WebServerSG"
+    Name = "testappSG"
   }
 }
 
@@ -78,7 +78,7 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
   tags = {
-    Name = "WebServer"
+    Name = "TestApp"
   }
 }
 
